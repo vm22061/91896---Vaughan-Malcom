@@ -42,7 +42,7 @@ team_member_dictionary = {
     "JSM" : {
         "Name" : "John Smith",
         "Email" : "John@techvision.com",
-        "tasks_assigned" : ["T1","T2"],
+        "Tasks assigned" : ["T1","T2"],
     },
     "JLO" : {
         "Name" : "Jane Love",
@@ -59,24 +59,22 @@ team_member_dictionary = {
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
         task list, assign a team member, priority status and discription"""
-    task_multenterbox(["","","","",""],task_dictionary)
+    task_multenterbox(["","","","",""],task_dictionary,"Add a new task")
 
-def task_multenterbox(initial_values, accessing_dictionary):
+def task_multenterbox(initial_values, accessing_dictionary,title):
     prompt = "Please enter the desired information below..."
     entering_fields = []
-    for main_dictionary_id, dictionary_keys in accessing_dictionary:
-        entering_fields.append([main_dictionary_id][dictionary_keys])
-    title = "Add a new task"
+    for main_dictionary_id, dictionary_definitions in accessing_dictionary.items():
+        for dictionary_key in dictionary_definitions:
+            if dictionary_key not in entering_fields:
+                entering_fields.append(dictionary_key)
     task_details = easygui.multenterbox(prompt,title,entering_fields,
         initial_values)
-    task_name = task_details[1]
-    task_description = task_details[2]
-    task_asignee = task_details[3]
-    task_priority_rating = task_details[4]
-    task_status = task_details[5]
-
-
-
+    if task_details == None:
+        main_menu()
+    for entered_value in task_details:
+        if entered_value == None:
+            #initial_values.append("(Please enter a ",type()," here)")
 
 #def update_task():
 
@@ -89,5 +87,8 @@ def task_multenterbox(initial_values, accessing_dictionary):
 #def check_if_digit(digit,max_value,min_value):
 
 #def check_if_string(string):
+
+def main_menu():
+    print("Main menu")
 
 add_new_task()
