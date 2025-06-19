@@ -59,22 +59,26 @@ team_member_dictionary = {
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
         task list, assign a team member, priority status and discription"""
-    task_multenterbox(["","","","",""],task_dictionary,"Add a new task")
+    edit_add_multenterbox(["","","","",""],task_dictionary,"Add a new task")
 
-def task_multenterbox(initial_values, accessing_dictionary,title):
+def edit_add_multenterbox(initial_values, accessing_dictionary,title):
+    """"IDK"""
     prompt = "Please enter the desired information below..."
+    feild_value_types = []
     entering_fields = []
     for main_dictionary_id, dictionary_definitions in accessing_dictionary.items():
+        feild_value_types.append(type(dictionary_definitions))
         for dictionary_key in dictionary_definitions:
             if dictionary_key not in entering_fields:
                 entering_fields.append(dictionary_key)
+    print(feild_value_types)            
     task_details = easygui.multenterbox(prompt,title,entering_fields,
         initial_values)
-    if task_details == None:
-        main_menu()
-    for entered_value in task_details:
-        if entered_value == None:
-            #initial_values.append("(Please enter a ",type()," here)")
+    #if task_details == None:
+    #    main_menu()
+    #for entered_value in task_details:
+    #    if entered_value == None:
+    #        print("None")
 
 #def update_task():
 
