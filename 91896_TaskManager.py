@@ -62,79 +62,64 @@ high_to_low_priority_values = ["3","2","1"]
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
         task list, assign a team member, priority status and discription"""
-    edit_or_add_multenterbox([],task_dictionary,"Add a new task",None)
+    edit_or_add_multenterbox([],"Add a new task",None)
 
-def edit_or_add_multenterbox(initial_values,accessing_dictionary,
-title,add_or_edit):
+def edit_or_add_multenterbox(initial_values,title,edit_or_add):
     """"IDK"""
     prompt = "Please enter the desired information below..."
-    field_value_types = []
     entering_fields = []
-    for main_dictionary_id, \
-        dictionary_definitions in accessing_dictionary.items():
+    for main_dictionary_id, dictionary_definitions in task_dictionary.items():
         for dictionary_key in dictionary_definitions:
             if dictionary_key not in entering_fields:
                 if dictionary_key not in preassigned_values:
-                    entering_fields.append(dictionary_key)
-    for entering_field in entering_fields:
-        field_value_types.append("")
-    for main_dict_id, dict_definitions in accessing_dictionary.items():
-        value_type_iteration = -1
-        for key_with_value in dict_definitions:
-            value_type_iteration += 1
-            if key_with_value not in preassigned_values:
-                if type(
-                    accessing_dictionary[main_dict_id][key_with_value]
-                    ) != field_value_types[value_type_iteration]:
-                    field_value_types[value_type_iteration] = type(
-                        accessing_dictionary[main_dict_id][key_with_value]
-                        )         
+                    entering_fields.append(dictionary_key)      
     task_details = easygui.multenterbox(prompt,title,entering_fields,
         initial_values)
     if task_details == None:
         main_menu()
-    entered_values = []
-    correction_needed = False
-    for entered_value in task_details:
-        entered_values.append(entered_value)
-    correction_values = entered_values
-    value_type_iteration = -1
-    for entering in entered_values:
-        value_type_iteration += 1
+    for entering in task_details:
         if entering == '':
-            easygui.msgbox("Please fill in all fields")
-            edit_or_add_multenterbox(entered_values,accessing_dictionary,title)
-        elif type(entering) != field_value_types[value_type_iteration]:
-            correction_text = f"(Please insert a \
-                sufficiant {entering_fields[value_type_iteration]} here)"
-            correction_values[value_type_iteration] = correction_text
-            correction_needed = True
-    if correction_needed == True:   
-        easygui.msgbox("Please correctly fill in all feilds")
-        edit_or_add_multenterbox(correction_values,accessing_dictionary,title)
-    elif accessing_dictionary == task_dictionary:
-        assignee_choices = []
-        preselected_assignee = []
-        if add_or_edit != None:
-          preselected_assignee = add_or_edit
-        for team_member_id in team_member_dictionary:
-            assignee_full_name = team_member_dictionary[
-               team_member_id]["Name"
-               ]
-            assignee_choices.append(f"{team_member_id} : {assignee_full_name}")
-        assignee_chosen = easygui.choicebox("Set an assignee or continue if \
-            no assignee:","Choose an assignee",assignee_choices,
-            preselected_assignee)
-        priority_chosen = easygui.buttonbox("Set the tasks priority \
-           (set in order of high to low priority)","Set priority",
-           high_to_low_priority_values)
-        #if priority_chosen == None:
-
-        status_chosen = easygui.buttonbox("Set the tasks current status")
+            easygui.msgbox("Please fill in all fields...")
+            edit_or_add_multenterbox(task_details,title,edit_or_add)
+    if edit_or_add == None:
+        preassigned_value_choiceboxs([],[],[],[],-1,edit_or_add)
     else:
-        easygui.msgbox("Success!")
-        main_menu()
+        preassigned_value_choiceboxs(task_dictionary[edit_or_add]["Assignee"],
+        task_dictionary[edit_or_add]["Priority"],
+        task_dictionary[edit_or_add]["Status"],-1,edit_or_add)
 
+
+def preassigned_value_choiceboxs(preselected_assignee,preselected_priority,
+preselected_status,repeat_iteration,edit_or_add):
+    repeat_iteration += 1
+    if repeat_iteration > 2:
+        if edit_or_add != None:
+            easygui.msgbox("A new task has been successfully added!\
+                \n\nReturning to main menu...")
+        else:
+            easygui.msgbox(f"Task {edit_or_add} has been successsfully \
+                updated!\n\nReturning to main menu...")
+    choicebox_subject = preassigned_values[repeat_iteration]
+    choicebox_prompt = f"Set the task's {choicebox_subject}..."
+    choicebox_title = f"Set task's {choicebox_subject}"
+    #choicebox_choices = 
+    choicebox_preselect = [preselected_assignee,preselected_priority,
+    preselected_status][repeat_iteration]
+    assignee_choices = []
+    preselected_assignee = []
+    if edit_or_add != None:
+      preselected_assignee = edit_or_add
+    for team_member_id in team_member_dictionary:
+        assignee_full_name = team_member_dictionary[team_member_id]["Name"]
+        assignee_choices.append(f"{team_member_id} : {assignee_full_name}")
+    assignee_chosen = easygui.choicebox("Set an assignee or continue if \
+        no assignee:","Choose an assignee",assignee_choices,
+        preselected_assignee)
+    priority_chosen = easygui.buttonbox("Set the tasks priority \
+        (set in order of high to low priority)","Set priority",
+        high_to_low_priority_values)
+    #if priority_chosen == None:
+    status_chosen = easygui.buttonbox("Set the tasks current status")
 
 #def update_task():
 
