@@ -57,7 +57,12 @@ team_member_dictionary = {
 }
 
 preassigned_values = ["Assignee", "Priority", "Status"]
-high_to_low_priority_values = ["3","2","1"]
+task_edit_or_add_value_sets = {
+    "Assignee" : ["JSM","JLO","BDI"],
+    "Priority" : [3,2,1],
+    "Status" : ["Complete","In Progress","Blocked","Not Started"]
+}
+
 
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
@@ -82,15 +87,21 @@ def edit_or_add_multenterbox(initial_values,title,edit_or_add):
             easygui.msgbox("Please fill in all fields...")
             edit_or_add_multenterbox(task_details,title,edit_or_add)
     if edit_or_add == None:
-        preassigned_value_choiceboxs([],[],[],[],-1,edit_or_add)
+        preassigned_value_choiceboxs([],-1,edit_or_add)
     else:
-        preassigned_value_choiceboxs(task_dictionary[edit_or_add]["Assignee"],
-        task_dictionary[edit_or_add]["Priority"],
-        task_dictionary[edit_or_add]["Status"],-1,edit_or_add)
+        preassigned_preselects = []
+        preassigned_preselects.append(task_dictionary[edit_or_add]["Assignee"])
+        preassigned_preselects.append(task_dictionary[edit_or_add]["Priority"])
+        preassigned_preselects.append(task_dictionary[edit_or_add]["Status"])
+        preassigned_value_choiceboxs(preassigned_preselects,-1,edit_or_add)
 
 
-def preassigned_value_choiceboxs(preselected_assignee,preselected_priority,
-preselected_status,repeat_iteration,edit_or_add):
+def preassigned_value_choiceboxs(preselects,repeat_iteration,edit_or_add):
+    choicebox_subject = []
+    choicebox_prompt = []
+    choicebox_title = []
+    choicebox_choices = []
+    choicebox_preselect = []
     repeat_iteration += 1
     if repeat_iteration > 2:
         if edit_or_add != None:
@@ -102,24 +113,32 @@ preselected_status,repeat_iteration,edit_or_add):
     choicebox_subject = preassigned_values[repeat_iteration]
     choicebox_prompt = f"Set the task's {choicebox_subject}..."
     choicebox_title = f"Set task's {choicebox_subject}"
-    #choicebox_choices = 
-    choicebox_preselect = [preselected_assignee,preselected_priority,
-    preselected_status][repeat_iteration]
-    assignee_choices = []
-    preselected_assignee = []
-    if edit_or_add != None:
-      preselected_assignee = edit_or_add
-    for team_member_id in team_member_dictionary:
-        assignee_full_name = team_member_dictionary[team_member_id]["Name"]
-        assignee_choices.append(f"{team_member_id} : {assignee_full_name}")
-    assignee_chosen = easygui.choicebox("Set an assignee or continue if \
-        no assignee:","Choose an assignee",assignee_choices,
-        preselected_assignee)
-    priority_chosen = easygui.buttonbox("Set the tasks priority \
-        (set in order of high to low priority)","Set priority",
-        high_to_low_priority_values)
-    #if priority_chosen == None:
-    status_chosen = easygui.buttonbox("Set the tasks current status")
+    choicebox_choices = task_edit_or_add_value_sets[choicebox_subject]
+    if choicebox_subject == "Assignee":
+        choicebox_choices.append("Next step")
+    choicebox_choices.extend(["Return to previous step","Return to main menu"])
+    if preselects != None:
+        choicebox_preselect = [preselects][repeat_iteration]
+    easygui.choicebox(choicebox_prompt,choicebox_title,choicebox_choices,
+    choicebox_preselect)
+
+    # CHECK INPUT AND RETURN HERE!!!!!
+
+    # assignee_choices = []
+    # preselected_assignee = []
+    # if edit_or_add != None:
+    #   preselected_assignee = edit_or_add
+    # for team_member_id in team_member_dictionary:
+    #     assignee_full_name = team_member_dictionary[team_member_id]["Name"]
+    #     assignee_choices.append(f"{team_member_id} : {assignee_full_name}")
+    # assignee_chosen = easygui.choicebox("Set an assignee or continue if \
+    #     no assignee:","Choose an assignee",assignee_choices,
+    #     preselected_assignee)
+    # priority_chosen = easygui.buttonbox("Set the tasks priority \
+    #     (set in order of high to low priority)","Set priority",
+    #     high_to_low_priority_values)
+    # #if priority_chosen == None:
+    # status_chosen = easygui.buttonbox("Set the tasks current status")
 
 #def update_task():
 
