@@ -67,78 +67,110 @@ task_edit_or_add_value_sets = {
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
         task list, assign a team member, priority status and discription"""
+
     edit_or_add_multenterbox([],"Add a new task",None)
 
 def edit_or_add_multenterbox(initial_values,title,edit_or_add):
     """"IDK"""
+
     prompt = "Please enter the desired information below..."
     entering_fields = []
-    for main_dictionary_id, dictionary_definitions in task_dictionary.items():
+
+    for dictionary_definitions in task_dictionary.values():
         for dictionary_key in dictionary_definitions:
             if dictionary_key not in entering_fields:
                 if dictionary_key not in preassigned_values:
-                    entering_fields.append(dictionary_key)      
+                    entering_fields.append(dictionary_key)     
+
     task_details = easygui.multenterbox(prompt,title,entering_fields,
         initial_values)
+
     if task_details == None:
         main_menu()
     for entering in task_details:
         if entering == '':
             easygui.msgbox("Please fill in all fields...")
             edit_or_add_multenterbox(task_details,title,edit_or_add)
+
     if edit_or_add == None:
-        preassigned_value_choiceboxs([],-1,edit_or_add)
+        preassigned_value_choiceboxs([],-1,edit_or_add,task_details,title)
     else:
         preassigned_preselects = []
         preassigned_preselects.append(task_dictionary[edit_or_add]["Assignee"])
         preassigned_preselects.append(task_dictionary[edit_or_add]["Priority"])
         preassigned_preselects.append(task_dictionary[edit_or_add]["Status"])
-        preassigned_value_choiceboxs(preassigned_preselects,-1,edit_or_add)
+        preassigned_value_choiceboxs(preassigned_preselects,-1,edit_or_add,
+        task_details,title)
 
+def preassigned_value_choiceboxs(preselects,repeat_iteration,edit_or_add,
+task_details,title):
+    """ENTER HERE"""
 
-def preassigned_value_choiceboxs(preselects,repeat_iteration,edit_or_add):
-    choicebox_subject = []
-    choicebox_prompt = []
-    choicebox_title = []
-    choicebox_choices = []
+    choicebox_choices = [""]
     choicebox_preselect = []
+
     repeat_iteration += 1
+
     if repeat_iteration > 2:
         if edit_or_add != None:
+            task_dictionary
             easygui.msgbox("A new task has been successfully added!\
                 \n\nReturning to main menu...")
+            main_menu()
         else:
+            task_dictionary[edit_or_add] = {
+                "Title" : task_details[0],
+                "Description" : task_details[1],
+                "Assignee" : chosen_assignee,
+                "Priority" : chosen_priority,
+                "Status" : chosen_status
+                }
             easygui.msgbox(f"Task {edit_or_add} has been successsfully \
                 updated!\n\nReturning to main menu...")
+            main_menu()
+
     choicebox_subject = preassigned_values[repeat_iteration]
     choicebox_prompt = f"Set the task's {choicebox_subject}..."
     choicebox_title = f"Set task's {choicebox_subject}"
     choicebox_choices = task_edit_or_add_value_sets[choicebox_subject]
+
     if choicebox_subject == "Assignee":
         choicebox_choices.append("Next step")
-    choicebox_choices.extend(["Return to previous step","Return to main menu"])
-    if preselects != None:
+
+    choicebox_choices.append("Return to previous step")
+    choicebox_choices.append("Return to main menu")
+
+    if preselects != []:
         choicebox_preselect = [preselects][repeat_iteration]
-    easygui.choicebox(choicebox_prompt,choicebox_title,choicebox_choices,
-    choicebox_preselect)
 
-    # CHECK INPUT AND RETURN HERE!!!!!
+    selected_value = easygui.choicebox(choicebox_prompt,choicebox_title,
+    choicebox_choices,choicebox_preselect)
 
-    # assignee_choices = []
-    # preselected_assignee = []
-    # if edit_or_add != None:
-    #   preselected_assignee = edit_or_add
-    # for team_member_id in team_member_dictionary:
-    #     assignee_full_name = team_member_dictionary[team_member_id]["Name"]
-    #     assignee_choices.append(f"{team_member_id} : {assignee_full_name}")
-    # assignee_chosen = easygui.choicebox("Set an assignee or continue if \
-    #     no assignee:","Choose an assignee",assignee_choices,
-    #     preselected_assignee)
-    # priority_chosen = easygui.buttonbox("Set the tasks priority \
-    #     (set in order of high to low priority)","Set priority",
-    #     high_to_low_priority_values)
-    # #if priority_chosen == None:
-    # status_chosen = easygui.buttonbox("Set the tasks current status")
+    if selected_value == None:
+        main_menu()
+    elif selected_value == "Next step":
+        preassigned_value_choiceboxs(preselects,repeat_iteration,edit_or_add,
+        task_details,title)
+    elif selected_value == "Return to previous step":
+        if repeat_iteration == 0:
+            edit_or_add_multenterbox(task_details,title,edit_or_add)
+        else:
+            preassigned_value_choiceboxs(preselects,int(repeat_iteration)-2,
+            edit_or_add,task_details,title)
+    elif selected_value == "Return to main menu":
+        main_menu()
+    elif repeat_iteration == 0:
+        chosen_assignee = selected_value
+        preassigned_value_choiceboxs(preselects,repeat_iteration,
+            edit_or_add,task_details,title)
+    elif repeat_iteration == 1:
+        chosen_priority = selected_value
+        preassigned_value_choiceboxs(preselects,repeat_iteration,
+            edit_or_add,task_details,title)
+    elif repeat_iteration == 2:
+        chosen_status = selected_value
+        preassigned_value_choiceboxs(preselects,repeat_iteration,
+            edit_or_add,task_details,title)
 
 #def update_task():
 
@@ -175,10 +207,6 @@ def print_tasks(sort_status, sort_direction):
             print_tasks(sort_status, sort_direction)
         else:
             print_tasks(sort_or_exit, sort_direction_choice)
-
-#def check_if_digit(digit,max_value,min_value):
-
-#def check_if_string(string):
 
 def main_menu():
     print_tasks("By Creation", "Ascending")
