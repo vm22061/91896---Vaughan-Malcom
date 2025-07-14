@@ -63,7 +63,6 @@ task_edit_or_add_value_sets = {
     "Status" : ["Complete","In Progress","Blocked","Not Started"]
 }
 
-
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
         task list, assign a team member, priority status and discription"""
@@ -92,6 +91,9 @@ def edit_or_add_multenterbox(initial_values,title,edit_or_add):
             easygui.msgbox("Please fill in all fields...")
             edit_or_add_multenterbox(task_details,title,edit_or_add)
 
+    for value in preassigned_values:
+        task_details.append("")
+
     if edit_or_add == None:
         preassigned_value_choiceboxs([],-1,edit_or_add,task_details,title)
     else:
@@ -112,8 +114,7 @@ task_details,title):
     repeat_iteration += 1
 
     if repeat_iteration > 2:
-        if edit_or_add != None:
-            task_dictionary
+        if edit_or_add == None:
             easygui.msgbox("A new task has been successfully added!\
                 \n\nReturning to main menu...")
             main_menu()
@@ -121,9 +122,9 @@ task_details,title):
             task_dictionary[edit_or_add] = {
                 "Title" : task_details[0],
                 "Description" : task_details[1],
-                "Assignee" : chosen_assignee,
-                "Priority" : chosen_priority,
-                "Status" : chosen_status
+                "Assignee" : task_details[2],
+                "Priority" : task_details[3],
+                "Status" : task_details[4]
                 }
             easygui.msgbox(f"Task {edit_or_add} has been successsfully \
                 updated!\n\nReturning to main menu...")
@@ -134,11 +135,14 @@ task_details,title):
     choicebox_title = f"Set task's {choicebox_subject}"
     choicebox_choices = task_edit_or_add_value_sets[choicebox_subject]
 
-    if choicebox_subject == "Assignee":
+    if (choicebox_subject == "Assignee")\
+        and not ("Next step" in choicebox_choices):
         choicebox_choices.append("Next step")
 
-    choicebox_choices.append("Return to previous step")
-    choicebox_choices.append("Return to main menu")
+    if not ("Return to previous step" in choicebox_choices):
+        choicebox_choices.append("Return to previous step")
+    if not ("Return to main menu" in choicebox_choices):
+        choicebox_choices.append("Return to main menu")
 
     if preselects != []:
         choicebox_preselect = [preselects][repeat_iteration]
@@ -160,15 +164,15 @@ task_details,title):
     elif selected_value == "Return to main menu":
         main_menu()
     elif repeat_iteration == 0:
-        chosen_assignee = selected_value
+        task_details[2] = selected_value
         preassigned_value_choiceboxs(preselects,repeat_iteration,
             edit_or_add,task_details,title)
     elif repeat_iteration == 1:
-        chosen_priority = selected_value
+        task_details[3] = selected_value
         preassigned_value_choiceboxs(preselects,repeat_iteration,
             edit_or_add,task_details,title)
     elif repeat_iteration == 2:
-        chosen_status = selected_value
+        task_details[4] = selected_value
         preassigned_value_choiceboxs(preselects,repeat_iteration,
             edit_or_add,task_details,title)
 
