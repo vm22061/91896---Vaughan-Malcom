@@ -42,7 +42,7 @@ team_member_dictionary = {
     "JSM" : {
         "Name" : "John Smith",
         "Email" : "John@techvision.com",
-        "Tasks assigned" : ["T1","T2"],
+        "Tasks assigned" : ["T2","T1"],
     },
     "JLO" : {
         "Name" : "Jane Love",
@@ -115,7 +115,23 @@ task_details,title):
 
     if repeat_iteration > 2:
         if edit_or_add == None:
-            easygui.msgbox("A new task has been successfully added!\
+            task_dictionary[f"T{int(len(task_dictionary))+1}"] = {
+                "Title" : task_details[0],
+                "Description" : task_details[1],
+                "Assignee" : task_details[2],
+                "Priority" : task_details[3],
+                "Status" : task_details[4]
+                }
+            for member in team_member_dictionary:
+                if member == task_details[2]:
+                    print(list(team_member_dictionary[member]["Tasks assigned"]))
+                    if [f"T{int(len(task_dictionary))}"] not in \
+                        list(team_member_dictionary[member]["Tasks assigned"]):
+                        print(f"T{int(len(task_dictionary))}")
+                        team_member_dictionary[member]["Tasks assigned"].append(f"T{int(len(task_dictionary))}")
+                        team_member_dictionary[member]["Tasks assigned"].sort()
+                        print(list(team_member_dictionary[member]["Tasks assigned"]))
+            easygui.msgbox("A new task has been successfully added! \
                 \n\nReturning to main menu...")
             main_menu()
         else:
@@ -213,6 +229,14 @@ def print_tasks(sort_status, sort_direction):
             print_tasks(sort_or_exit, sort_direction_choice)
 
 def main_menu():
-    print_tasks("By Creation", "Ascending")
+#    print_tasks("By Creation", "Ascending")
+    print_tasks_format = []
+    for task_name in task_dictionary:
+        print_tasks_format.append(task_name)
+        for task_key in task_name:
+            print_tasks_format.append(f"\n\n{task_key}")
+            for task_value in task_key:
+                print_tasks_format.append(f"\n\n\n\n{task_value}")
+    easygui.msgbox(f"{task_dictionary}\n\n{team_member_dictionary}")
 
 add_new_task()
