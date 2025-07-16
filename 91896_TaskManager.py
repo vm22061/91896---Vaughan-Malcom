@@ -198,45 +198,33 @@ task_details,title):
 
 #def generate_report():
 
-def print_tasks(sort_status, sort_direction):
-    """"Print tasks"""""
-    choicebox_title = "Current tasks"
-    choicebox_text = [f"Sorted {sort_status}:"]
-    choicebox_text.append("===================================================\
-        ===========")
-    choicebox_sort_options = ["By Creation","By Priority","By Status",
-    "By Assignee","Exit"]
+def print_tasks():
 
-    if sort_status == "By Creation":
-        for task_id, task_details in task_dictionary.items():
-            choicebox_text.append(f"\n[ {task_dictionary[task_id]['Title']} ]")
-            for task_key, task_value in task_details.items():
-                if task_key != "Title":
-                    choicebox_text.append(f"\t{task_key}: {task_value}")
+    choicebox_title = "Print tasks"
+    choicebox_text = ["Current tasks"]
+
+    for task_id, task_details in task_dictionary.items():
+        choicebox_text.append(f"\n[ {task_dictionary[task_id]['Title']} ]")
+        for task_key, task_value in task_details.items():
+            if task_key != "Title":
+                choicebox_text.append(f"\t{task_key}: {task_value}")
     
-    sort_or_exit = easygui.choicebox("\n".join(choicebox_text),choicebox_title,
-    choices=choicebox_sort_options)
-    if sort_or_exit == None or sort_or_exit == "Exit":
+    exit = easygui.msgbox("\n".join(choicebox_text),choicebox_title)
+
+    if exit == None:
         main_menu()
     else:
-        buttonbox_text = "Sort by: " + sort_or_exit
-        buttonbox_choices = ["Ascending", "Descending", "Exit"]
-        sort_direction_choice = easygui.buttonbox(buttonbox_text,
-        choices=buttonbox_choices)
-        if sort_direction == None or sort_direction == "Exit":
-            print_tasks(sort_status, sort_direction)
-        else:
-            print_tasks(sort_or_exit, sort_direction_choice)
+        main_menu()
 
 def main_menu():
-#    print_tasks("By Creation", "Ascending")
-    print_tasks_format = []
-    for task_name in task_dictionary:
-        print_tasks_format.append(task_name)
-        for task_key in task_name:
-            print_tasks_format.append(f"\n\n{task_key}")
-            for task_value in task_key:
-                print_tasks_format.append(f"\n\n\n\n{task_value}")
-    easygui.msgbox(f"{task_dictionary}\n\n{team_member_dictionary}")
 
-add_new_task()
+    navgation_choices = ["Add new task","Update task","Search for task or team member","Generate report","Task summary"]
+
+    main_menu_navigation = easygui.buttonbox("Main navigation:","Main menu",navgation_choices)
+
+    if main_menu_navigation == navgation_choices[0]:
+        add_new_task()
+    elif main_menu_navigation == "Task summary":
+        print_tasks()
+
+main_menu()
