@@ -57,6 +57,7 @@ team_member_dictionary = {
 }
 
 preassigned_values = ["Assignee", "Priority", "Status"]
+
 task_edit_or_add_value_sets = {
     "Assignee" : ["JSM","JLO","BDI"],
     "Priority" : [3,2,1],
@@ -124,13 +125,16 @@ task_details,title):
                 }
             for member in team_member_dictionary:
                 if member == task_details[2]:
-                    print(list(team_member_dictionary[member]["Tasks assigned"]))
+                    print(list( \
+                        team_member_dictionary[member]["Tasks assigned"]))
                     if [f"T{int(len(task_dictionary))}"] not in \
                         list(team_member_dictionary[member]["Tasks assigned"]):
                         print(f"T{int(len(task_dictionary))}")
-                        team_member_dictionary[member]["Tasks assigned"].append(f"T{int(len(task_dictionary))}")
+                        team_member_dictionary[member]["Tasks assigned" \
+                            ].append(f"T{int(len(task_dictionary))}")
                         team_member_dictionary[member]["Tasks assigned"].sort()
-                        print(list(team_member_dictionary[member]["Tasks assigned"]))
+                        print(list(team_member_dictionary[member][ \
+                            "Tasks assigned"]))
             easygui.msgbox("A new task has been successfully added! \
                 \n\nReturning to main menu...")
             main_menu()
@@ -181,6 +185,7 @@ task_details,title):
         main_menu()
     elif repeat_iteration == 0:
         task_details[2] = selected_value
+        # make the status an easygui integrbox with boundaries of 1 to 3
         preassigned_value_choiceboxs(preselects,repeat_iteration,
             edit_or_add,task_details,title)
     elif repeat_iteration == 1:
@@ -196,11 +201,28 @@ task_details,title):
 
 #def search():
 
-#def generate_report():
+def generate_report():
+
+    report_text = ["Task report"]
+    amount_of_status = []
+
+    for task in task_dictionary:
+        if task_dictionary[task]['Status'] == task_edit_or_add_value_sets["Status"][0]:
+            amount_of_status.append(1)
+    for status in task_edit_or_add_value_sets["Status"]:  
+        report_text.append(f"\n[ {status} ] : [ {amount_of_status} ]")
+        print(task)
+        report_text.append(f"\n[ {status} ] : [ {task_dictionary[task]['Status']} ]")
+
+    exit = easygui.msgbox("\n".join(report_text),"Generated task report")
+
+    if exit == None:
+        main_menu()
+    else:
+        main_menu()
 
 def print_tasks():
 
-    choicebox_title = "Print tasks"
     choicebox_text = ["Current tasks"]
 
     for task_id, task_details in task_dictionary.items():
@@ -209,7 +231,7 @@ def print_tasks():
             if task_key != "Title":
                 choicebox_text.append(f"\t{task_key}: {task_value}")
     
-    exit = easygui.msgbox("\n".join(choicebox_text),choicebox_title)
+    exit = easygui.msgbox("\n".join(choicebox_text),"Print tasks")
 
     if exit == None:
         main_menu()
@@ -218,13 +240,21 @@ def print_tasks():
 
 def main_menu():
 
-    navgation_choices = ["Add new task","Update task","Search for task or team member","Generate report","Task summary"]
+    navgation_choices = ["Add new task","Update task", \
+        "Search for task or team member","Generate report","Task summary"]
 
-    main_menu_navigation = easygui.buttonbox("Main navigation:","Main menu",navgation_choices)
+    main_menu_navigation = easygui.buttonbox("Main navigation:", \
+        "Main menu",navgation_choices)
 
     if main_menu_navigation == navgation_choices[0]:
         add_new_task()
-    elif main_menu_navigation == "Task summary":
+    elif main_menu_navigation == navgation_choices[1]:
+        main_menu()
+    elif main_menu_navigation == navgation_choices[2]:
+        easygui.integerbox("")
+    elif main_menu_navigation == navgation_choices[3]:
+        generate_report()
+    elif main_menu_navigation == navgation_choices[4]:
         print_tasks()
 
 main_menu()
