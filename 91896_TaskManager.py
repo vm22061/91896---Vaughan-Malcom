@@ -185,7 +185,7 @@ task_details,title):
         main_menu()
     elif repeat_iteration == 0:
         task_details[2] = selected_value
-        # make the status an easygui integrbox with boundaries of 1 to 3
+        # make the status an easygui integrbox with boundaries of 1 to 3 and have the text say "use cancel to return to previous step"
         preassigned_value_choiceboxs(preselects,repeat_iteration,
             edit_or_add,task_details,title)
     elif repeat_iteration == 1:
@@ -204,15 +204,29 @@ task_details,title):
 def generate_report():
 
     report_text = ["Task report"]
-    amount_of_status = []
+    status_list = []
+    amount_of_status_list = []
+
+    for status in task_edit_or_add_value_sets["Status"]:
+        status_list.append(status)
+        amount_of_status_list.append(0)
+
+    print(status_list)
+    print(amount_of_status_list)
 
     for task in task_dictionary:
-        if task_dictionary[task]['Status'] == task_edit_or_add_value_sets["Status"][0]:
-            amount_of_status.append(1)
-    for status in task_edit_or_add_value_sets["Status"]:  
-        report_text.append(f"\n[ {status} ] : [ {amount_of_status} ]")
-        print(task)
-        report_text.append(f"\n[ {status} ] : [ {task_dictionary[task]['Status']} ]")
+        repeat_iteration = -1
+        for status in status_list:
+            repeat_iteration += 1
+            if task_dictionary[task]['Status'] == status_list[int(repeat_iteration)]:
+                print(f"value : {amount_of_status_list[repeat_iteration]}")
+                amount_of_status_list[int(repeat_iteration)] = int(amount_of_status_list[int(repeat_iteration)]) + 1
+
+    repeat_iteration = -1
+    
+    for status in status_list:
+        repeat_iteration += 1  
+        report_text.append(f"\n[ {status} ] : [ {status_list[repeat_iteration]} ]")
 
     exit = easygui.msgbox("\n".join(report_text),"Generated task report")
 
