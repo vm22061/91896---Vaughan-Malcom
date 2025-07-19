@@ -96,16 +96,16 @@ def edit_or_add_multenterbox(initial_values,title,edit_or_add):
         task_details.append("")
 
     if edit_or_add == None:
-        preassigned_value_choiceboxs([],-1,edit_or_add,task_details,title)
+        preassigned_value_choiceboxes([],-1,edit_or_add,task_details,title)
     else:
         preassigned_preselects = []
         preassigned_preselects.append(task_dictionary[edit_or_add]["Assignee"])
         preassigned_preselects.append(task_dictionary[edit_or_add]["Priority"])
         preassigned_preselects.append(task_dictionary[edit_or_add]["Status"])
-        preassigned_value_choiceboxs(preassigned_preselects,-1,edit_or_add,
+        preassigned_value_choiceboxes(preassigned_preselects,-1,edit_or_add,
         task_details,title)
 
-def preassigned_value_choiceboxs(preselects,repeat_iteration,edit_or_add,
+def preassigned_value_choiceboxes(preselects,repeat_iteration,edit_or_add,
 task_details,title):
     """ENTER HERE"""
 
@@ -173,29 +173,37 @@ task_details,title):
     if selected_value == None:
         main_menu()
     elif selected_value == "Next step":
-        preassigned_value_choiceboxs(preselects,repeat_iteration,edit_or_add,
+        preassigned_value_choiceboxes(preselects,repeat_iteration,edit_or_add,
         task_details,title)
     elif selected_value == "Return to previous step":
         if repeat_iteration == 0:
             edit_or_add_multenterbox(task_details,title,edit_or_add)
         else:
-            preassigned_value_choiceboxs(preselects,int(repeat_iteration)-2,
+            preassigned_value_choiceboxes(preselects,int(repeat_iteration)-2,
             edit_or_add,task_details,title)
     elif selected_value == "Return to main menu":
         main_menu()
     elif repeat_iteration == 0:
         task_details[2] = selected_value
         # make the status an easygui integrbox with boundaries of 1 to 3 and have the text say "use cancel to return to previous step"
-        preassigned_value_choiceboxs(preselects,repeat_iteration,
+        preassigned_value_choiceboxes(preselects,repeat_iteration,
             edit_or_add,task_details,title)
     elif repeat_iteration == 1:
         task_details[3] = selected_value
-        preassigned_value_choiceboxs(preselects,repeat_iteration,
+        preassigned_value_choiceboxes(preselects,repeat_iteration,
             edit_or_add,task_details,title)
     elif repeat_iteration == 2:
         task_details[4] = selected_value
-        preassigned_value_choiceboxs(preselects,repeat_iteration,
+        preassigned_value_choiceboxes(preselects,repeat_iteration,
             edit_or_add,task_details,title)
+
+def priority_integerbox():
+
+    upper = task_edit_or_add_value_sets["Priority"][0]
+    lower = task_edit_or_add_value_sets["Priority"][-1]
+    msg = f"Enter priority from {upper} (high priority) to {lower} (low priority)\n\n[ Press 'Exit' to return to previous step ]"
+    priority_entering = easygui.integerbox(msg,"Task priority",lowerbound=lower, upperbound=upper)
+
 
 #def update_task():
 
@@ -203,7 +211,7 @@ task_details,title):
 
 def generate_report():
 
-    report_text = ["Task report"]
+    report_text = ["Task report:"]
     status_list = []
     amount_of_status_list = []
 
@@ -226,7 +234,7 @@ def generate_report():
     
     for status in status_list:
         repeat_iteration += 1  
-        report_text.append(f"\n[ {status} ] : [ {status_list[repeat_iteration]} ]")
+        report_text.append(f"\n[ {status} ] : {amount_of_status_list[repeat_iteration]}")
 
     exit = easygui.msgbox("\n".join(report_text),"Generated task report")
 
@@ -271,4 +279,5 @@ def main_menu():
     elif main_menu_navigation == navgation_choices[4]:
         print_tasks()
 
-main_menu()
+#main_menu()
+priority_integerbox()
