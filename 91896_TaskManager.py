@@ -202,8 +202,10 @@ def priority_integerbox():
     upper = task_edit_or_add_value_sets["Priority"][0]
     lower = task_edit_or_add_value_sets["Priority"][-1]
     msg = f"Enter priority from {upper} (high priority) to {lower} (low priority)\n\n[ Press 'Exit' to return to previous step ]"
-    priority_entering = easygui.integerbox(msg,"Task priority",lowerbound=lower, upperbound=upper)
 
+    easygui.integerbox(msg,"Task priority",lowerbound=lower, upperbound=upper)
+
+    print("Next step")
 
 #def update_task():
 
