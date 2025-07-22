@@ -150,25 +150,30 @@ task_details,title):
                 updated!\n\nReturning to main menu...")
             main_menu()
 
-    choicebox_subject = preassigned_values[repeat_iteration]
-    choicebox_prompt = f"Set the task's {choicebox_subject}..."
-    choicebox_title = f"Set task's {choicebox_subject}"
-    choicebox_choices = task_edit_or_add_value_sets[choicebox_subject]
+    if repeat_iteration != 1:
+        choicebox_subject = preassigned_values[repeat_iteration]
+        choicebox_prompt = f"Set the task's {choicebox_subject}..."
+        choicebox_title = f"Set task's {choicebox_subject}"
+        choicebox_choices = task_edit_or_add_value_sets[choicebox_subject]
 
-    if (choicebox_subject == "Assignee")\
-        and not ("Next step" in choicebox_choices):
-        choicebox_choices.append("Next step")
+        if (choicebox_subject == "Assignee")\
+            and not ("Next step" in choicebox_choices):
+            choicebox_choices.append("Next step")
 
-    if not ("Return to previous step" in choicebox_choices):
-        choicebox_choices.append("Return to previous step")
-    if not ("Return to main menu" in choicebox_choices):
-        choicebox_choices.append("Return to main menu")
+        if not ("Return to previous step" in choicebox_choices):
+            choicebox_choices.append("Return to previous step")
+        if not ("Return to main menu" in choicebox_choices):
+            choicebox_choices.append("Return to main menu")
 
-    if preselects != []:
-        choicebox_preselect = [preselects][repeat_iteration]
+        if preselects != []:
+            choicebox_preselect = [preselects][repeat_iteration]
 
-    selected_value = easygui.choicebox(choicebox_prompt,choicebox_title,
-    choicebox_choices,choicebox_preselect)
+
+    if repeat_iteration == 1:
+        selected_value = priority_integerbox()
+    else:
+        selected_value = easygui.choicebox(choicebox_prompt,choicebox_title,
+        choicebox_choices,choicebox_preselect)
 
     if selected_value == None:
         main_menu()
@@ -185,7 +190,6 @@ task_details,title):
         main_menu()
     elif repeat_iteration == 0:
         task_details[2] = selected_value
-        # make the status an easygui integrbox with boundaries of 1 to 3 and have the text say "use cancel to return to previous step"
         preassigned_value_choiceboxes(preselects,repeat_iteration,
             edit_or_add,task_details,title)
     elif repeat_iteration == 1:
@@ -201,11 +205,17 @@ def priority_integerbox():
 
     upper = task_edit_or_add_value_sets["Priority"][0]
     lower = task_edit_or_add_value_sets["Priority"][-1]
-    msg = f"Enter priority from {upper} (high priority) to {lower} (low priority)\n\n[ Press 'Exit' to return to previous step ]"
+    msg = f"Enter priority from {upper} (high priority) to {lower} "
+    msg += "(low priority)\n\n[ Press 'Exit' to return to previous step ]"
 
-    easygui.integerbox(msg,"Task priority",lowerbound=lower, upperbound=upper)
+    selected_value = easygui.integerbox(msg,"Task priority",lowerbound=lower, upperbound=upper)
 
-    print("Next step")
+    if selected_value == None:
+        selected_value = "Return to previous step"
+
+    print(selected_value)
+
+    return selected_value
 
 #def update_task():
 
@@ -281,5 +291,4 @@ def main_menu():
     elif main_menu_navigation == navgation_choices[4]:
         print_tasks()
 
-#main_menu()
-priority_integerbox()
+main_menu()
