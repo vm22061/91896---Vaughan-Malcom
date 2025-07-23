@@ -219,7 +219,41 @@ def priority_integerbox():
 
 #def update_task():
 
-#def search():
+def search(choice):
+
+    if choice != None:
+        task_or_team_member = easygui.buttonbox(
+            "Would you like to search for a task or a team member?",
+            "Search task or team member",
+            ["Search for task", "Search for team member"])
+    else:
+        task_or_team_member = choice
+
+    if task_or_team_member == None:
+        main_menu()
+    elif task_or_team_member == "Search for task":
+
+        task_list = []
+
+        for id in task_dictionary:
+            task_list.append(task_dictionary[id]["Title"])
+
+        task_choice = easygui.choicebox("Choose a task to access:",
+        task_or_team_member,task_list)
+
+        task_details = []
+
+        for task_id, task_values in task_dictionary.items():
+            if task_dictionary[task_id]["Title"] == task_choice:
+                task_details.append(f"\n[ {task_dictionary[task_id]['Title']} ]")
+                for task_key, task_value in task_values.items():
+                    if task_key != "Title":
+                        task_details.append(f"\t{task_key}: {task_value}")
+
+        easygui.msgbox("\n".join(task_details),"Task details")
+
+        search("Search for task")
+
 
 def generate_report():
 
@@ -285,7 +319,7 @@ def main_menu():
     elif main_menu_navigation == navgation_choices[1]:
         main_menu()
     elif main_menu_navigation == navgation_choices[2]:
-        easygui.integerbox("")
+        search()
     elif main_menu_navigation == navgation_choices[3]:
         generate_report()
     elif main_menu_navigation == navgation_choices[4]:
