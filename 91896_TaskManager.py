@@ -125,18 +125,24 @@ task_details,title):
                 }
             for member in team_member_dictionary:
                 if member == task_details[2]:
-                    print(list( \
-                        team_member_dictionary[member]["Tasks assigned"]))
                     if [f"T{int(len(task_dictionary))}"] not in \
                         list(team_member_dictionary[member]["Tasks assigned"]):
-                        print(f"T{int(len(task_dictionary))}")
                         team_member_dictionary[member]["Tasks assigned" \
                             ].append(f"T{int(len(task_dictionary))}")
                         team_member_dictionary[member]["Tasks assigned"].sort()
-                        print(list(team_member_dictionary[member][ \
-                            "Tasks assigned"]))
-            easygui.msgbox("A new task has been successfully added! \
-                \n\nReturning to main menu...")
+
+            task_format = []
+
+            for task_id, task_values in task_dictionary.items():
+                if task_dictionary[task_id]["Title"] == task_details[0]:
+                    task_format.append(f"\n[ {task_dictionary[task_id]['Title']} ]")
+                    for task_key, task_value in task_values.items():
+                        if task_key != "Title":
+                            task_format.append(f"\t{task_key}: {task_value}")
+            
+            task_format = "\n".join(task_format)
+
+            easygui.msgbox(f"A new task has been successfully added!\n{task_format}\n\nReturning to main menu...")
             main_menu()
         else:
             task_dictionary[edit_or_add] = {
@@ -214,8 +220,6 @@ def priority_integerbox():
     if selected_value == None:
         selected_value = "Return to previous step"
 
-    print(selected_value)
-
     return selected_value
 
 #def update_task():
@@ -284,20 +288,16 @@ def search(choice):
                     )
                 for member_key, member_value in member_values.items():
                     if member_key != "Name":
-                        member_details.append(
-                            f"\t{member_key}: {member_value}"
-                            )
-                    # THIS DOESN"T WORK!!!!!
-                    elif type(member_value) == {list}:
-                        member_value_text = []
-                        for item in member_value:
-                            member_value_text.append(item)
-                            print(member_value_text)
-                        member_details.append(
-                            f"\t{member_key}: {member_value_text}"
-                            )
-
-
+                        if isinstance(member_value, list):
+                            member_value_text = ", ".join(member_value)
+                            member_details.append(
+                                f"\t{member_key}: {member_value_text}"
+                                )
+                        else:
+                            member_details.append(
+                                f"\t{member_key}: {member_value}"
+                                )
+                        
         easygui.msgbox("\n".join(member_details),"team member details")
 
         search("Search for team member")
