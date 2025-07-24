@@ -42,7 +42,7 @@ team_member_dictionary = {
     "JSM" : {
         "Name" : "John Smith",
         "Email" : "John@techvision.com",
-        "Tasks assigned" : ["T2","T1"],
+        "Tasks assigned" : ["T1","T2"],
     },
     "JLO" : {
         "Name" : "Jane Love",
@@ -208,7 +208,8 @@ def priority_integerbox():
     msg = f"Enter priority from {upper} (high priority) to {lower} "
     msg += "(low priority)\n\n[ Press 'Exit' to return to previous step ]"
 
-    selected_value = easygui.integerbox(msg,"Task priority",lowerbound=lower, upperbound=upper)
+    selected_value = easygui.integerbox(msg,"Task priority",lowerbound=lower, 
+    upperbound=upper)
 
     if selected_value == None:
         selected_value = "Return to previous step"
@@ -221,15 +222,18 @@ def priority_integerbox():
 
 def search(choice):
 
-    if choice != None:
+    if choice == None:
         task_or_team_member = easygui.buttonbox(
             "Would you like to search for a task or a team member?",
             "Search task or team member",
-            ["Search for task", "Search for team member"])
+            ["Search for task", "Search for team member",
+            "Return to main menu"])
     else:
         task_or_team_member = choice
 
     if task_or_team_member == None:
+        main_menu()
+    if task_or_team_member == "Return to main menu":
         main_menu()
     elif task_or_team_member == "Search for task":
 
@@ -241,11 +245,15 @@ def search(choice):
         task_choice = easygui.choicebox("Choose a task to access:",
         task_or_team_member,task_list)
 
+        if task_choice == None:
+            search(None)
+
         task_details = []
 
         for task_id, task_values in task_dictionary.items():
             if task_dictionary[task_id]["Title"] == task_choice:
-                task_details.append(f"\n[ {task_dictionary[task_id]['Title']} ]")
+                task_details.append(f"\n[ {task_dictionary[task_id]['Title']} \
+                    ]")
                 for task_key, task_value in task_values.items():
                     if task_key != "Title":
                         task_details.append(f"\t{task_key}: {task_value}")
@@ -253,6 +261,46 @@ def search(choice):
         easygui.msgbox("\n".join(task_details),"Task details")
 
         search("Search for task")
+
+    elif task_or_team_member == "Search for team member":
+
+        member_list = []
+
+        for id in team_member_dictionary:
+            member_list.append(team_member_dictionary[id]["Name"])
+
+        member_choice = easygui.choicebox("Choose a team member to access:",
+        task_or_team_member,member_list)
+
+        if member_choice == None:
+            search(None)
+
+        member_details = []
+
+        for member_id, member_values in team_member_dictionary.items():
+            if team_member_dictionary[member_id]["Name"] == member_choice:
+                member_details.append(
+                    f"\n[ {team_member_dictionary[member_id]['Name']} ]"
+                    )
+                for member_key, member_value in member_values.items():
+                    if member_key != "Name":
+                        member_details.append(
+                            f"\t{member_key}: {member_value}"
+                            )
+                    # THIS DOESN"T WORK!!!!!
+                    elif type(member_value) == {list}:
+                        member_value_text = []
+                        for item in member_value:
+                            member_value_text.append(item)
+                            print(member_value_text)
+                        member_details.append(
+                            f"\t{member_key}: {member_value_text}"
+                            )
+
+
+        easygui.msgbox("\n".join(member_details),"team member details")
+
+        search("Search for team member")
 
 
 def generate_report():
@@ -272,15 +320,19 @@ def generate_report():
         repeat_iteration = -1
         for status in status_list:
             repeat_iteration += 1
-            if task_dictionary[task]['Status'] == status_list[int(repeat_iteration)]:
+            if task_dictionary[task]['Status'] == \
+                status_list[int(repeat_iteration)]:
                 print(f"value : {amount_of_status_list[repeat_iteration]}")
-                amount_of_status_list[int(repeat_iteration)] = int(amount_of_status_list[int(repeat_iteration)]) + 1
+                amount_of_status_list[int(repeat_iteration)] = \
+                    int(amount_of_status_list[int(repeat_iteration)]) + 1
 
     repeat_iteration = -1
     
     for status in status_list:
         repeat_iteration += 1  
-        report_text.append(f"\n[ {status} ] : {amount_of_status_list[repeat_iteration]}")
+        report_text.append(
+            f"\n[ {status} ] : {amount_of_status_list[repeat_iteration]}"
+            )
 
     exit = easygui.msgbox("\n".join(report_text),"Generated task report")
 
@@ -319,7 +371,7 @@ def main_menu():
     elif main_menu_navigation == navgation_choices[1]:
         main_menu()
     elif main_menu_navigation == navgation_choices[2]:
-        search()
+        search(None)
     elif main_menu_navigation == navgation_choices[3]:
         generate_report()
     elif main_menu_navigation == navgation_choices[4]:
