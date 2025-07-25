@@ -152,6 +152,11 @@ task_details,title):
                 "Priority" : task_details[3],
                 "Status" : task_details[4]
                 }
+            for member_id in team_member_dictionary.items():
+                if team_member_dictionary[member_id]["Name"] == task_details[2]:
+                    if edit_or_add not in team_member_dictionary[member_id]["Tasks assigned"]:
+                        team_member_dictionary[member_id]["Tasks assigned"].append(edit_or_add)
+                        team_member_dictionary[member_id]["Tasks assigned"].sort()
             easygui.msgbox(f"Task {edit_or_add} has been successsfully \
                 updated!\n\nReturning to main menu...")
             main_menu()
