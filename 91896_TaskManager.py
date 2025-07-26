@@ -145,6 +145,28 @@ task_details,title):
             easygui.msgbox(f"A new task has been successfully added!\n{task_format}\n\nReturning to main menu...")
             main_menu()
         else:
+            if task_dictionary[edit_or_add]["Assignee"] != task_details[2]:
+                for member_id in team_member_dictionary.items():
+                    if team_member_dictionary[member_id]["Name"] == task_details[2]:
+                        if edit_or_add not in team_member_dictionary[member_id]["Tasks assigned"]:
+                            team_member_dictionary[member_id]["Tasks assigned"].append(edit_or_add)
+                            team_member_dictionary[member_id]["Tasks assigned"].sort()
+                    if task_dictionary[edit_or_add]["Assignee"] == team_member_dictionary[member_id]["Name"]:
+                        new_task_list = []
+                        for set_task in team_member_dictionary[member_id]["Tasks assigned"]:
+                            if set_task != edit_or_add:
+                                new_task_list.append(set_task)
+                        team_member_dictionary[member_id]["Tasks assigned"] = new_task_list
+
+            if task_details[4] == "Complete":
+                for members in team_member_dictionary.items:
+                    if team_member_dictionary[members]["Name"] == task_details[2]:
+                        new_task_list = []
+                        for set_task in team_member_dictionary[members]["Tasks assigned"]:
+                            if set_task != edit_or_add:
+                                new_task_list.append(set_task)
+                        team_member_dictionary[members]["Tasks assigned"] = new_task_list
+
             task_dictionary[edit_or_add] = {
                 "Title" : task_details[0],
                 "Description" : task_details[1],
@@ -152,11 +174,7 @@ task_details,title):
                 "Priority" : task_details[3],
                 "Status" : task_details[4]
                 }
-            for member_id in team_member_dictionary.items():
-                if team_member_dictionary[member_id]["Name"] == task_details[2]:
-                    if edit_or_add not in team_member_dictionary[member_id]["Tasks assigned"]:
-                        team_member_dictionary[member_id]["Tasks assigned"].append(edit_or_add)
-                        team_member_dictionary[member_id]["Tasks assigned"].sort()
+            
             easygui.msgbox(f"Task {edit_or_add} has been successsfully \
                 updated!\n\nReturning to main menu...")
             main_menu()
