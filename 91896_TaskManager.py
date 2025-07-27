@@ -67,11 +67,9 @@ task_edit_or_add_value_sets = {
 assignee_list_length = len(task_edit_or_add_value_sets["Assignee"])
 
 status_list = []
-amount_of_statuses = []
 
 for status in task_edit_or_add_value_sets["Status"]:
     status_list.append(status)
-    amount_of_statuses.append(0)
 
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
@@ -418,9 +416,14 @@ def search(choice):
 def generate_report():
 
     report_text = ["Task report:"]
-    #If I state this as amount "amount_of_status_list = amount_of_statuses" the amount_of_statuses is the side that changes???
-    #Part in testing doc waiting for answer!!! 
-    amount_of_status_list = [0,0,0,0]
+
+    amount_of_statuses = []
+
+    for status in task_edit_or_add_value_sets["Status"]:
+        if status not in ["Return to main menu","Next step","Return to previous step"]:
+            amount_of_statuses.append(0)
+
+    amount_of_status_list = amount_of_statuses
 
     for task in task_dictionary:
         repeat_iteration = -1
