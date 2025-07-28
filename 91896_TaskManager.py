@@ -73,42 +73,53 @@ for status in task_edit_or_add_value_sets["Status"]:
 
 def add_new_task():
     """"Using this function, the users will be able to add a new task to the 
-        task list, assign a team member, priority status and discription"""
+        task list, assign a team member, priority, status and discription"""
 
     edit_or_add_multenterbox([],"Add a new task",None)
 
 def edit_or_add_multenterbox(initial_values,title,edit_or_add):
-    """"IDK"""
+    """Within this function holds the code to generate a multenterbox for users to input both the title and description of a task"""
 
     prompt = "Please enter the desired information below..."
     entering_fields = []
 
+    # Gets all of the values for users to enter in that aren't "Assignee", "Priority" or "Status"
     for dictionary_definitions in task_dictionary.values():
         for dictionary_key in dictionary_definitions:
             if dictionary_key not in entering_fields:
                 if dictionary_key not in preassigned_values:
                     entering_fields.append(dictionary_key)     
 
+    # Generates the multenterbox
     task_details = easygui.multenterbox(prompt,title,entering_fields,
         initial_values)
 
+    # When the user presses 'Cancel' they are sent to either the main menu or the update task choice choicebox
     if task_details == None:
         if edit_or_add == None:
             main_menu()
         else:
             update_task()
+    
+    # Checks if any of the fields are empty and if so displays an error message 
     for entering in task_details:
         if entering == '':
             easygui.msgbox("Please fill in all fields...")
             edit_or_add_multenterbox(task_details,title,edit_or_add)
 
+    # Gets a string of empty values equal to the length of the preassigned value list
     for value in preassigned_values:
         task_details.append("")
 
+    # Checks whether the user is adding or editting a the task and enters the next steps in the choice/integerboxes
     if edit_or_add == None:
-        preassigned_value_choiceboxes([],-1,edit_or_add,task_details,title)
+        preassigned_value_choiceboxes([],-1,edit_or_add,task_details,title)    
     else:
+
+        # if the user is editing this sets the preselected values for the remaining steps
         preassigned_preselects = []
+
+        # Gets the index value of the preselected assignee choice
         assingee_preselect = -1
         if task_dictionary[edit_or_add]["Assignee"] != '':
             for assingee in task_edit_or_add_value_sets["Assignee"]:
@@ -117,7 +128,11 @@ def edit_or_add_multenterbox(initial_values,title,edit_or_add):
                     preassigned_preselects.append(assingee_preselect)
         elif task_dictionary[edit_or_add]["Assignee"] == "":
                 preassigned_preselects.append(assignee_list_length)
+
+        # Gets preexisting value for the task's priority
         preassigned_preselects.append(task_dictionary[edit_or_add]["Priority"])
+
+        # Gets the index value of the preselected status choice
         status_preselect = -1
         for status in task_edit_or_add_value_sets["Status"]:
             status_preselect += 1
@@ -133,10 +148,16 @@ task_details,title):
     choicebox_choices = [""]
     choicebox_preselect = []
 
+    # Gains 1 each time this function is run so it knows when to stop and get all the task's information
     repeat_iteration += 1
 
+    # Checks if it's on its last repeat and if so sets the tasks new deatils
     if repeat_iteration > 2:
+
+        # Checks if the user is editing or adding a new task
         if edit_or_add == None:
+
+            # If adding a new task it gets a new id and dictionary values
             task_dictionary[f"T{int(len(task_dictionary))+1}"] = {
                 "Title" : task_details[0],
                 "Description" : task_details[1],
@@ -144,14 +165,18 @@ task_details,title):
                 "Priority" : task_details[3],
                 "Status" : task_details[4]
                 }
-            for member in team_member_dictionary:
-                if member == task_details[2]:
-                    if [f"T{int(len(task_dictionary))}"] not in \
-                        list(team_member_dictionary[member]["Tasks assigned"]):
-                        team_member_dictionary[member]["Tasks assigned" \
-                            ].append(f"T{int(len(task_dictionary))}")
-                        team_member_dictionary[member]["Tasks assigned"].sort()
+            
+            # Adds the task to the chosen team members "Tasks assigned" list if the status isn't "Complete"
+            if task_details[4] != "Complete":
+                for member in team_member_dictionary:
+                    if member == task_details[2]:
+                        if [f"T{int(len(task_dictionary))}"] not in \
+                            list(team_member_dictionary[member]["Tasks assigned"]):
+                            team_member_dictionary[member]["Tasks assigned" \
+                                ].append(f"T{int(len(task_dictionary))}")
+                            team_member_dictionary[member]["Tasks assigned"].sort()
 
+            # Gets the tasks information in a readible format for a preview at the end of the process
             task_format = []
 
             for task_id, task_values in task_dictionary.items():
@@ -160,11 +185,15 @@ task_details,title):
                     for task_key, task_value in task_values.items():
                         if task_key != "Title":
                             task_format.append(f"\t{task_key}: {task_value}")
-            
+
             task_format = "\n".join(task_format)
 
+            # Displays a msgbox with a success message and a preview of the added task
             easygui.msgbox(f"A new task has been successfully added!\n{task_format}\n\nReturning to main menu...")
+
+            # Returns the user to the main menu once they press "OK"
             main_menu()
+
         else:
             if task_dictionary[edit_or_add]["Assignee"] != task_details[2]:
                 for member_id in team_member_dictionary:
