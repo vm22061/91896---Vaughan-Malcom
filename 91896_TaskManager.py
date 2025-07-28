@@ -60,6 +60,7 @@ preassigned_values = ["Assignee", "Priority", "Status"]
 
 task_edit_or_add_value_sets = {
     "Assignee" : ["JSM","JLO","BDI"],
+    "Assignee Choices" : ["JSM : John Smith","JLO : Jane Love","BDI : Bob Dillon"],
     "Priority" : [3,2,1],
     "Status" : ["Complete","In Progress","Blocked","Not Started"]
 }
@@ -72,7 +73,7 @@ for status in task_edit_or_add_value_sets["Status"]:
     status_list.append(status)
 
 def add_new_task():
-    """"Using this function, the users will be able to add a new task to the 
+    """Using this function, the users will be able to add a new task to the 
         task list, assign a team member, priority, status and discription"""
 
     edit_or_add_multenterbox([],"Add a new task",None)
@@ -195,7 +196,10 @@ task_details,title):
             main_menu()
 
         else:
+
+            # This runs if the user is editting the task to compair the input information to the preexisting information
             if task_dictionary[edit_or_add]["Assignee"] != task_details[2]:
+                # If the task was changed the new choice is added to the chosen assignees tasks assigned list and taken away from the previous assignee
                 for member_id in team_member_dictionary:
                     if member_id == task_details[2]:
                         if edit_or_add not in team_member_dictionary[member_id]["Tasks assigned"]:
