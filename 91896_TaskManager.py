@@ -561,5 +561,7 @@ def main_menu():
         generate_report()
     elif main_menu_navigation == navgation_choices[4]:
         print_tasks()
+    else:
+        quit()
 
 main_menu()
