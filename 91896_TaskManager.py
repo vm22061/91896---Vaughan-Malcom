@@ -18,7 +18,7 @@ task_dictionary = {
     "T3" : {
         "Title" : "Fix navigation menu",
         "Description" : "Fix the navigation menu to be more user-friendly",
-        "Assignee" : "", #"None"???
+        "Assignee" : "",
         "Priority" : 1,
         "Status" : "Not Started"
     },
@@ -88,19 +88,19 @@ def edit_or_add_multenterbox(initial_values,title,edit_or_add):
     entering_fields = []
 
     # Gets all of the values for users to enter in that aren't 
-    # "Assignee", "Priority" or "Status"
+    # "Assignee", "Priority" or "Status."
     for dictionary_definitions in task_dictionary.values():
         for dictionary_key in dictionary_definitions:
             if dictionary_key not in entering_fields:
                 if dictionary_key not in preassigned_values:
                     entering_fields.append(dictionary_key)     
 
-    # Generates the multenterbox
+    # Generates the multenterbox.
     task_details = easygui.multenterbox(prompt,title,entering_fields,
         initial_values)
 
     # When the user presses 'Cancel' they are sent to either the main 
-    # menu or the update task choice choicebox
+    # menu or the update task choice choicebox.
     if task_details == None:
         if edit_or_add == None:
             main_menu()
@@ -108,28 +108,28 @@ def edit_or_add_multenterbox(initial_values,title,edit_or_add):
             update_task()
     
     # Checks if any of the fields are empty and if so displays an error 
-    # message 
+    # message. 
     for entering in task_details:
         if entering == '':
             easygui.msgbox("Please fill in all fields...")
             edit_or_add_multenterbox(task_details,title,edit_or_add)
 
     # Gets a string of empty values equal to the length of the 
-    # preassigned value list
+    # preassigned value list.
     for value in preassigned_values:
         task_details.append("")
 
     # Checks whether the user is adding or editting a the task and 
-    # enters the next steps in the choice/integerboxes
+    # enters the next steps in the choice/integerboxes.
     if edit_or_add == None:
         preassigned_value_choiceboxes([],-1,edit_or_add,task_details,title)    
     else:
 
         # if the user is editing this sets the preselected values for 
-        # the remaining steps
+        # the remaining steps.
         preassigned_preselects = []
 
-        # Gets the index value of the preselected assignee choice
+        # Gets the index value of the preselected assignee choice.
         assingee_preselect = -1
         if task_dictionary[edit_or_add]["Assignee"] != '':
             for assingee in task_edit_or_add_value_sets["Assignee"]:
@@ -139,10 +139,10 @@ def edit_or_add_multenterbox(initial_values,title,edit_or_add):
         elif task_dictionary[edit_or_add]["Assignee"] == "":
                 preassigned_preselects.append(assignee_list_length)
 
-        # Gets preexisting value for the task's priority
+        # Gets preexisting value for the task's priority.
         preassigned_preselects.append(task_dictionary[edit_or_add]["Priority"])
 
-        # Gets the index value of the preselected status choice
+        # Gets the index value of the preselected status choice.
         status_preselect = -1
         for status in task_edit_or_add_value_sets["Status"]:
             status_preselect += 1
@@ -159,18 +159,18 @@ task_details,title):
     choicebox_preselect = []
 
     # Gains 1 each time this function is run so it knows when to stop 
-    # and get all the task's information
+    # and get all the task's information.
     repeat_iteration += 1
 
     # Checks if it's on its last repeat and if so sets the tasks new 
-    # deatils
+    # deatils.
     if repeat_iteration > 2:
 
-        # Checks if the user is editing or adding a new task
+        # Checks if the user is editing or adding a new task.
         if edit_or_add == None:
 
-            # If adding a new task it gets a new id and dictionary 
-            # values
+            # If adding a new task it gets a new id and dictionary
+            # values.
             task_dictionary[f"T{int(len(task_dictionary))+1}"] = {
                 "Title" : task_details[0],
                 "Description" : task_details[1],
@@ -180,7 +180,7 @@ task_details,title):
                 }
             
             # Adds the task to the chosen team members "Tasks assigned" 
-            # list if the status isn't "Complete"
+            # list if the status isn't "Complete."
             if task_details[4] != "Complete":
                 for member in team_member_dictionary:
                     if member == task_details[2]:
@@ -193,7 +193,7 @@ task_details,title):
                             ]["Tasks assigned"].sort()
 
             # Gets the tasks information in a readible format for a 
-            # preview at the end of the process
+            # preview at the end of the process.
             task_format = []
 
             for task_id, task_values in task_dictionary.items():
@@ -208,23 +208,23 @@ task_details,title):
             task_format = "\n".join(task_format)
 
             # Displays a msgbox with a success message and a preview of 
-            # the added task
+            # the added task.
             msg = "A new task has been successfully added!\n"
             msg += task_format
             msg += "\n\nReturning to main menu..."
             easygui.msgbox(msg)
 
-            # Returns the user to the main menu once they press "OK"
+            # Returns the user to the main menu once they press "OK."
             main_menu()
 
         else:
 
             # This runs if the user is editting the task to compair the 
-            # input information to the preexisting information
+            # input information to the preexisting information.
             if task_dictionary[edit_or_add]["Assignee"] != task_details[2]:
                 # If the task was changed the new choice is added to the 
                 # chosen assignees tasks assigned list and taken away 
-                # from the previous assignee
+                # from the previous assignee.
                 for member_id in team_member_dictionary:
                     if member_id == task_details[2]:
                         tasks_assigned = \
@@ -319,16 +319,9 @@ task_details,title):
             edit_or_add,task_details,title)
     elif selected_value == "Return to main menu":
         main_menu()
-    elif repeat_iteration == 0:
-        task_details[2] = selected_value
-        preassigned_value_choiceboxes(preselects,repeat_iteration,
-            edit_or_add,task_details,title)
-    elif repeat_iteration == 1:
-        task_details[3] = selected_value
-        preassigned_value_choiceboxes(preselects,repeat_iteration,
-            edit_or_add,task_details,title)
-    elif repeat_iteration == 2:
-        task_details[4] = selected_value
+    else:
+        repeat_vlaue = int(repeat_iteration) + 2
+        task_details[repeat_vlaue] = selected_value
         preassigned_value_choiceboxes(preselects,repeat_iteration,
             edit_or_add,task_details,title)
 
@@ -413,7 +406,9 @@ def search(choice):
         for id in task_dictionary:
             task_list.append(f'{id} : {task_dictionary[id]["Title"]}')
 
-        task_choice = easygui.choicebox("Choose a task to access:",
+        task_choice = easygui.choicebox(
+            "Choose a task to access:" + \
+                "\n\n(Press 'Cancel' to return to search choice)",
         task_or_team_member,task_list)
 
         if task_choice == None:
@@ -451,7 +446,8 @@ def search(choice):
         for id in team_member_dictionary:
             member_list.append(f'{id} : {team_member_dictionary[id]["Name"]}')
 
-        member_choice = easygui.choicebox("Choose a team member to access:",
+        member_choice = easygui.choicebox("Choose a team member to access:" + \
+                "\n\n(Press 'Cancel' to return to search choice)",
         task_or_team_member,member_list)
 
         if member_choice == None:
